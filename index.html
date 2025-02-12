@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>时间转换工具</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>时间转换工具</h1>
+        
+        <div class="timezone-selector">
+            <label for="timezone">选择时区：</label>
+            <select id="timezone" onchange="updateResults()">
+                <option value="Asia/Shanghai">中国 (UTC+8)</option>
+                <option value="Asia/Tokyo">日本 (UTC+9)</option>
+                <option value="America/New_York">纽约 (UTC-4/5)</option>
+                <option value="Europe/London">伦敦 (UTC+0/1)</option>
+                <option value="Europe/Paris">巴黎 (UTC+1/2)</option>
+            </select>
+        </div>
+        
+        <div class="conversion-box">
+            <h2>日期时间转时间戳</h2>
+            <div class="input-group">
+                <input type="datetime-local" id="dateTimeInput" step="1">
+                <button onclick="convertToTimestamp()">转换</button>
+            </div>
+            <div class="result" id="timestampResult"></div>
+        </div>
+
+        <div class="conversion-box">
+            <h2>时间戳转日期时间</h2>
+            <div class="input-group">
+                <input type="number" id="timestampInput" placeholder="请输入时间戳（秒）">
+                <button onclick="convertToDateTime()">转换</button>
+            </div>
+            <div class="result" id="dateTimeResult"></div>
+        </div>
+    </div>
+
+    <script>
+        function convertToTimestamp() {
+            const dateTime = document.getElementById('dateTimeInput').value;
+            const timezone = document.getElementById('timezone').value;
+            
+            if (dateTime) {
+                // 创建一个特定时区的日期对象
+                const date = new Date(dateTime);
+                const timestamp = Math.floor(date.getTime() / 1000);
+                document.getElementById('timestampResult').textContent = `时间戳：${timestamp}`;
+            }
+        }
+
+        function convertToDateTime() {
+            const timestamp = document.getElementById('timestampInput').value;
+            const timezone = document.getElementById('timezone').value;
+            
+            if (timestamp) {
+                const date = new Date(timestamp * 1000);
+                const options = {
+                    timeZone: timezone,
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: false
+                };
+                
+                const formatted = new Intl.DateTimeFormat('zh-CN', options).format(date);
+                document.getElementById('dateTimeResult').textContent = `日期时间：${formatted}`;
+            }
+        }
+
+        function updateResults() {
+            // 如果已有输入值，则更新显示结果
+            if (document.getElementById('dateTimeInput').value) {
+                convertToTimestamp();
+            }
+            if (document.getElementById('timestampInput').value) {
+                convertToDateTime();
+            }
+        }
+    </script>
+</body>
+</html> 
